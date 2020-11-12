@@ -6,7 +6,7 @@ var aantalWijn = 0;
 var aantalBitterballen = 0;
 var stop = false;
 
-function klantBestelling() {
+function klantBestelling() { //Deze functie stelt de User de vraag wat de User wilt bestellen, als de User stop invoert wordt de bon functie getriggered.
     while(!stop) {
 	    bestelling = prompt("Geef een bestelling op. fris, bier, wijn of snack");
         bestelling = bestelling.toLowerCase();          
@@ -24,7 +24,8 @@ function klantBestelling() {
         }   
     }
 }
-function bitterballen() {
+function bitterballen() { //Deze functie wordt alleen gebruikt als de User 'snack' invoert bij klantBestelling, deze functie stelt vragen over de bitterballen bestelling.
+    bitterballen = true;
     while(!stop) {
         bitterballen = prompt("Hoeveel bitterballen wilt u toevoegen (8 of 16)?");
         bitterballen = bitterballen.toLowerCase();
@@ -33,14 +34,14 @@ function bitterballen() {
             aantalBitterballen = Number(aantalBitterballen);
             aantalBitterballen = prompt("Hoeveel bitterbalschalen van " + bitterballen + " stuks wilt u bestellen?");
             alert("Je hebt " + aantalBitterballen + " bitterbalschalen van " + bitterballen + " bitterballen besteld.");
-            break;
-        }else {
+            bitterballen = false;
+        } else {
             alert("U kunt alleen een keuze maken tussen 8 en 16. De snacks zijn niet toegevoegd aan de bestelling.");
             break;
         }
     }
 }
-function klantQuantity() {
+function klantQuantity() { //Deze functie rekent de hoeveelheid uit van elke bestelling.
     quantity = true;
 	while(!stop) {
 		quantity = prompt("Hoeveel " + bestelling + " wilt u bestellen?");
@@ -68,7 +69,7 @@ function klantQuantity() {
 	    }
 	}
 }
-function bon() {
+function bon() { //Deze functie geeft de User de bon als er 'stop' wordt ingevoert, hier wordt ook berekent de totaalprijs van de bestellingen en het totale bedrag.
 	document.write("hier is uw bon <br>");
     var totaalPrijsFris = Math.round((aantalFris * FRIS) * 100) / 100; //Mat.round rond Numbers af
     var totaalPrijsBier = Math.round((aantalBier * BIER) * 100) / 100;
