@@ -34,7 +34,7 @@ function bitterballen() { //Deze functie wordt alleen gebruikt als de User 'snac
             aantalBitterballen = Number(aantalBitterballen);
             aantalBitterballen = prompt("Hoeveel bitterbalschalen van " + bitterballen + " stuks wilt u bestellen?");
             alert("Je hebt " + aantalBitterballen + " bitterbalschalen van " + bitterballen + " bitterballen besteld.");
-            bitterballen = false;
+            klantBestelling();
         } else {
             alert("U kunt alleen een keuze maken tussen 8 en 16. De snacks zijn niet toegevoegd aan de bestelling.");
             break;
