@@ -1,86 +1,91 @@
-const FRIS = 1.20, BIER = 2.30, WIJN = 4.10, BITTERBALSCHALEN = 2.30;
-var bestelling, quantity = true;
-var aantalFris = 0;
-var aantalBier = 0;
-var aantalWijn = 0;
-var aantalBitterballen = 0;
+const PRICE = {FRIS:1.20, BIER:2.30, WIJN:4.10, BITTERBALLEN1:2.30, BITTERBALLEN2:3.50};
+var order, quantity, bitterbal = true;
+var orderQty = {qtyFris:0, qtyBier:0, qtyWijn:0, qtyBitterballen8:0, qtyBitterballen16:0};
 var stop = false;
 
-function klantBestelling() { //Deze functie stelt de User de vraag wat de User wilt bestellen, als de User stop invoert wordt de bon functie getriggered.
+function customerOrder() {
     while(!stop) {
-	    bestelling = prompt("Geef een bestelling op. fris, bier, wijn of snack");
-        bestelling = bestelling.toLowerCase();          
-        if(bestelling === 'stop') {
-            alert("je bent gestopt");
+        order = prompt("Geef een bestelling op, fris, bier, wijn of snack.");
+        order = order.toLowerCase();
+        if(order === 'stop') {
+            alert("Je bent gestopt.");
             stop = true;
-            bon();        
-        } else if(bestelling == 'snack') {
+            receipt();
+        } else if(order == 'snack') {
             bitterballen();
-        } else if(bestelling !== 'fris' && bestelling !== 'bier' && bestelling !== 'wijn' && bestelling !== 'snack') {
-            alert("Ongeldige bestelling. fris, bier, wijn of bitterballen"); 
-            bestelling = false;
+        } else if(order !== 'fris' && order !== 'bier' && order !== 'wijn' && order !== 'snack') {
+            alert("Ongeldige bestelling, kies uit: fris, bier, wijn of bitterballen.");
+            order = false;
         } else {
-            klantQuantity();
-        }   
+            customerQuantity();
+        } 
     }
 }
-function bitterballen() { //Deze functie wordt alleen gebruikt als de User 'snack' invoert bij klantBestelling, deze functie stelt vragen over de bitterballen bestelling.
-    bitterballen = true;
+
+function bitterballen() {
+    var bitterbal = true;
     while(!stop) {
-        bitterballen = prompt("Hoeveel bitterballen wilt u toevoegen (8 of 16)?");
-        bitterballen = bitterballen.toLowerCase();
-        if (bitterballen == 8 || 16) {
-            bitterballen = Number(bitterballen);
-            aantalBitterballen = Number(aantalBitterballen);
-            aantalBitterballen = prompt("Hoeveel bitterbalschalen van " + bitterballen + " stuks wilt u bestellen?");
-            alert("Je hebt " + aantalBitterballen + " bitterbalschalen van " + bitterballen + " bitterballen besteld.");
-            klantBestelling();
+        bitterbal = prompt("Hoeveel bitterballen wilt u toevoegen (8 of 16)?");
+        bitterbal = Number(bitterbal);
+        if(bitterbal == Number(8)) {
+            orderQty['qtyBitterballen8'] = Number(orderQty['qtyBitterballen8']);
+            orderQty['qtyBitterballen8'] = prompt("Hoeveel bitterbalschalen van " + bitterbal + " stuks wilt u bestellen?");
+            alert("Je hebt " + orderQty['qtyBitterballen8'] + " bitterbalschalen van " + bitterbal + " bitterballen besteld.");
+            customerOrder();
+        } else if(bitterbal == Number(16)) {
+            orderQty['qtyBitterballen16'] = Number(orderQty['qtyBitterballen16']);
+            orderQty['qtyBitterballen16'] = prompt("Hoeveel bitterbalschalen van " + bitterbal + " stuks wilt u bestellen?");
+            alert("Je hebt " + orderQty['qtyBitterballen16'] + " bitterbalschalen van " + bitterbal + " bitterballen besteld.");
+            customerOrder();
         } else {
-            alert("U kunt alleen een keuze maken tussen 8 en 16. De snacks zijn niet toegevoegd aan de bestelling.");
-            break;
+            alert("U kunt alleen een keuze maken tussen 8 en 16, de snacks zijn niet toegevoegd aan de bestelling.");
+            bitterbal = false; 
         }
     }
-}
-function klantQuantity() { //Deze functie rekent de hoeveelheid uit van elke bestelling.
+} 
+
+function customerQuantity() {
     quantity = true;
-	while(!stop) {
-		quantity = prompt("Hoeveel " + bestelling + " wilt u bestellen?");
-        quantity = quantity.toLowerCase();       
-	    if(quantity === 'stop') {
-	        alert("je bent gestopt");
+    while(!stop) {
+        quantity = prompt("Hoeveel " + order + " wilt u bestellen?");
+        quantity = quantity.toLowerCase();
+        if(quantity === 'stop') {
+            alert("Je bent gestopt.");
             stop = true;
-            bon();	        
-	    } else if(!quantity.match(/^\d+$/)) { //Kijkt of wat er ingevoerd is wel een getal is.
-	        alert(`Incorrect number.`); 
-	        quantity = false; 
-	    } else { 
+            receipt();
+        } else if(!quantity.match(/^\d+$/)) {
+            alert("Incorrect number.");
+            quantity = false;
+        } else {
             quantity = Number(quantity);
-            if(bestelling == 'bier'){
-                aantalBier = aantalBier + quantity;
+            if(order == 'fris') {
+                orderQty['qtyFris'] = orderQty['qtyFris'] + quantity;
+            } else if(order == 'bier') {
+                orderQty['qtyBier'] = orderQty['qtyBier'] + quantity;
+            } else if (order == 'wijn') {
+                orderQty['qtyWijn'] = orderQty['qtyWijn'] + quantity;
             }
-            else if(bestelling == 'fris'){
-                aantalFris = aantalFris + quantity;
-            }
-            else if(bestelling == 'wijn'){
-                aantalWijn = aantalWijn + quantity;
-            }
-            alert("Je hebt " + quantity + "x " + bestelling + " besteld.");
+            alert("Je hebt " + quantity + "x " + order + " besteld.");
             break;
-	    }
-	}
+        } 
+    }
 }
-function bon() { //Deze functie geeft de User de bon als er 'stop' wordt ingevoert, hier wordt ook berekent de totaalprijs van de bestellingen en het totale bedrag.
-	document.write("hier is uw bon <br>");
-    var totaalPrijsFris = Math.round((aantalFris * FRIS) * 100) / 100; //Mat.round rond Numbers af
-    var totaalPrijsBier = Math.round((aantalBier * BIER) * 100) / 100;
-    var totaalPrijsWijn = Math.round((aantalWijn * WIJN) * 100) / 100;
-    var totaalPrijsBitterballen = Math.round((aantalBitterballen * BITTERBALSCHALEN) * 100) / 100;
 
-    document.write("bier " + aantalBier + " x " + BIER + " = " + totaalPrijsBier + "<br>");
-    document.write("fris " + aantalFris + " x " + FRIS + " = " + totaalPrijsFris + "<br>");
-    document.write("wijn " + aantalWijn + " x " + WIJN + " = " + totaalPrijsWijn + "<br>");
-    document.write("bitterbalschalen " + aantalBitterballen + " x " + BITTERBALSCHALEN + " = " + totaalPrijsBitterballen + "<br>");
+function receipt() {
+    document.write("Hier is uw bon <br>");
+    var totalPriceFris = Math.round((orderQty['qtyFris'] * PRICE['FRIS']) * 100) / 100;
+    var totalPriceBier = Math.round((orderQty['qtyBier'] * PRICE['BIER']) * 100) / 100;
+    var totalPriceWijn = Math.round((orderQty['qtyWijn'] * PRICE['WIJN']) * 100) / 100;
+    var totalPriceBitterballen8 = Math.round((orderQty['qtyBitterballen8'] * PRICE['BITTERBALLEN1']) * 100) / 100;
+    var totalPriceBitterballen16 = Math.round((orderQty['qtyBitterballen16'] * PRICE['BITTERBALLEN2']) * 100) / 100;
 
-    document.write('totaal = ' + (totaalPrijsBier + totaalPrijsWijn + totaalPrijsFris + totaalPrijsBitterballen));
+    document.write("fris " + orderQty['qtyFris'] + " x " + PRICE['FRIS'] + " = " + totalPriceFris + "<br>");
+    document.write("bier " + orderQty['qtyBier'] + " x " + PRICE['BIER'] + " = " + totalPriceBier + "<br>");
+    document.write("wijn " + orderQty['qtyWijn'] + " x " + PRICE['WIJN'] + " = " + totalPriceWijn + "<br>");
+    document.write("bitterbalschaal 8 bitterballen " + orderQty['qtyBitterballen8'] + " x " + PRICE['BITTERBALLEN1'] + " = " + totalPriceBitterballen8 + "<br>");
+    document.write("bitterbalschaal 16 bitterballen " + orderQty['qtyBitterballen16'] + " x " + PRICE['BITTERBALLEN2'] + " = " + totalPriceBitterballen16 + "<br>");
+
+    document.write("totaal = " + (totalPriceFris + totalPriceBier + totalPriceWijn + totalPriceBitterballen8 + totalPriceBitterballen16));
 }
-klantBestelling();
+
+customerOrder();
